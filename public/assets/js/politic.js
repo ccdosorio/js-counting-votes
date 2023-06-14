@@ -21,6 +21,15 @@ const containerList = document.getElementById('listShort');
 const getData = async () => {
     tbody.innerHTML = '';
     const { data } = await get('/api/politic/');
+    if (data.length === 0) {
+        const messageRow = tbody.insertRow();
+        const messageCell = messageRow.insertCell();
+        messageCell.colSpan = 27;
+        messageCell.classList = 'text-center';
+        messageCell.innerHTML = '<b>No hay datos disponibles. 😔</b>';
+        return;
+    }
+
     data.forEach(item => {
         const row = tbody.insertRow();
 
@@ -50,6 +59,14 @@ const getShortData = async () => {
     containerList.innerHTML = '';
 
     const { short: data } = await get('/api/politic/short');
+
+    if (data.length === 0) {
+        const noDataItem = document.createElement('li');
+        noDataItem.classList.add('list-group-item', 'centered-message');
+        noDataItem.innerHTML = '<b>No hay datos disponibles. 😔</b>';
+        containerList.appendChild(noDataItem);
+        return;
+    }
 
     containerList.classList.add('list-group');
     containerList.style.overflowY = 'auto';
@@ -211,6 +228,7 @@ btnGenerate.addEventListener('click', () => {
 });
 
 btnSave.addEventListener('click', () => {
+    const { name, col1 } = getFormPolicit();
     if (!name || col1 === 0) {
         getMessage('error', 'Error!', 'Debes ingresar el valor 1 y el nombre del partido');
         return;
